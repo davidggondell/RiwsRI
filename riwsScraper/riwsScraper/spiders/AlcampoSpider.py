@@ -6,17 +6,21 @@ from scrapy.linkextractors import LinkExtractor
 class AlcampoSpider(CrawlSpider):
     name = "alcampo"
     allowed_domains = ['alcampo.es']
-    start_urls = ['https://www.alcampo.es/compra-online/frio-y-congelados/c/W20022018']
+    start_urls = [
+        'https://www.alcampo.es/compra-online/alimentacion/c/WC10',
+        'https://www.alcampo.es/compra-online/frescos/c/W2112',
+        'https://www.alcampo.es/compra-online/frio-y-congelados/c/W20022018',
+        'https://www.alcampo.es/compra-online/bebidas/c/WC11'
+    ]
 
     rules = (
         # Extract links matching 'item.php' and parse them with the spider's method parse_item
         Rule(LinkExtractor(
-            allow=(r'c/W20022018.*Arelevance&page=[0-9]*$')), follow=True),
+            allow=(r'c/W.*Arelevance&page=[0-9]*$')), follow=True),
         Rule(LinkExtractor(allow=(r'.+/p/[0-9]+$', ),
              deny=(r'.*compra-online/ver-mas.*',
                    r'.*compra-online/electrodomesticos.*', r'.*compra-online/tecnologia.*', r'.*compra-online/cuidado-personal.*',
-                   r'.*compra-online/drogueria.*', r'.*compra-online/hogar.*', r'.*compra-online/frescos.*',
-                   r'.*compra-online/alimentacion.*', r'.*compra-online/bebidas.*')), callback='parse_item_page', follow=True),
+                   r'.*compra-online/drogueria.*', r'.*compra-online/hogar.*')), callback='parse_item_page', follow=True),
     )
 
     def parse_item_page(self, response):
@@ -25,6 +29,12 @@ class AlcampoSpider(CrawlSpider):
             '#containerDescription > h1:nth-child(1)::text').get()
         category = response.css(
             'li.migaPanLi:nth-child(2) > a:nth-child(1)::text').get()
+        price = response.css(
+            '#content > div.detalleDeProducto.caja.caja-reposo > div.productDetailsPanel > div > div.orderItemsContainer > div.addToCartDetailContainer > div.flex-container.product-price-info > div:nth-child(1) > div > span::text').get()
+        littlePrice = response.css(
+            '#content > div.detalleDeProducto.caja.caja-reposo > div.productDetailsPanel > div > div.orderItemsContainer > div.addToCartDetailContainer > div.flex-container.product-price-info > div:nth-child(1) > div > span > strong::text').get()
+        country = response.css(
+            '#tabSabiasQue > div > div.productNutritionalInformation.valoresNutricionalesTabla.tablaInformacionAdicional > div > table > tbody > tr:nth-child(4) > td > span.tablaValorContenido > div::text').get()
         kJ = response.css(
             'div.itemFood:nth-child(1) > span:nth-child(2)::text').get()
         kcal = response.css(
@@ -53,9 +63,13 @@ class AlcampoSpider(CrawlSpider):
             'div.itemFood:nth-child(7) > span:nth-child(2)::text').get()
         saltPercent = response.css(
             'div.itemFood:nth-child(7) > div:nth-child(3) > span:nth-child(1)::text').get()
+
+        priceString = price + '.' + littlePrice[1:-1]
+        totalPrice = float(priceString)
         return {
             'name': name,
             'category': category,
+            'price': totalPrice,
             'url': response.url,
             'kj': kJ,
             'kcal': kcal,
