@@ -29,6 +29,8 @@ class AlcampoSpider(CrawlSpider):
             '#containerDescription > h1:nth-child(1)::text').get()
         category = response.css(
             'li.migaPanLi:nth-child(2) > a:nth-child(1)::text').get()
+        subCategories = response.css(
+            '#breadcrumb > ul > li.migaPanLi > a::text').getall()[2:-2]
         price = response.css(
             '#content > div.detalleDeProducto.caja.caja-reposo > div.productDetailsPanel > div > div.orderItemsContainer > div.addToCartDetailContainer > div.flex-container.product-price-info > div:nth-child(1) > div > span::text').get()
         littlePrice = response.css(
@@ -69,6 +71,7 @@ class AlcampoSpider(CrawlSpider):
         return {
             'name': name,
             'category': category,
+            'subcategories': subCategories,
             'price': totalPrice,
             'url': response.url,
             'kj': kJ,
