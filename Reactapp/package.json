@@ -1,0 +1,47 @@
+{
+  "name": "riws-front",
+  "version": "1.0.0",
+  "description": "RIWS FrontEnd",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "last 1 edge version"
+    ]
+  },
+  "license": "BSD",
+  "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "@mui/material": "^5.0.6",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.16.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-intl": "^5.21.0",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.0.0",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
+  }
+}

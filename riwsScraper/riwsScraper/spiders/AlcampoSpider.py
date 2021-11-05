@@ -69,23 +69,25 @@ class AlcampoSpider(CrawlSpider):
         priceString = price + '.' + littlePrice[1:-1]
         totalPrice = float(priceString)
         return {
-            'name': name,
-            'category': category,
-            'subcategories': subCategories,
-            'price': totalPrice,
             'url': response.url,
-            'kj': kJ,
-            'kcal': kcal,
-            'fats': fats,
-            'fatPercent': fatPercent,
-            'satFat': satFat,
-            'satFatPercent': satFatPercent,
-            'carbs': carbs,
-            'carbPercent': carbPercent,
-            'sugar': sugar,
-            'sugarPercent': sugarPercent,
-            'protein': protein,
-            'proteinPercent': proteinPercent,
-            'salt': salt,
-            'saltPercent': saltPercent
+            'product': {
+                'name': name,
+                'category': category,
+                'subcategories': subCategories,
+                'price': totalPrice,
+                'kj': kJ if kJ == None else float(kJ.split()[0]),
+                'kcal': kcal if kcal == None else float(kcal.split()[0]),
+                'fats': fats if fats == None else float(fats.split()[0]),
+                'fatPercent': fatPercent if fatPercent == None else float(fatPercent.split()[0]),
+                'satFat': satFat if satFat == None else float(satFat.split()[0]),
+                'satFatPercent': satFatPercent if satFatPercent == None else float(satFatPercent.split()[0]),
+                'carbs': carbs if carbs == None else float(carbs.split()[0]),
+                'carbPercent': carbPercent if carbPercent == None else float(carbPercent.split()[0]),
+                'sugar': sugar if sugar == None else float(sugar.split()[0]),
+                'sugarPercent': sugarPercent if sugarPercent == None else float(sugarPercent.split()[0]),
+                'protein': protein if protein == None else float(protein.split()[0]),
+                'proteinPercent': proteinPercent if proteinPercent == None else float(proteinPercent.split()[0]),
+                'salt': salt if salt == None else float(salt.split()[0]),
+                'saltPercent': saltPercent if saltPercent == None else float(saltPercent.split()[0])
+            }
         }
