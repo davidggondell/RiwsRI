@@ -1,4 +1,4 @@
-export default {
+const gl = {
     'project.app.Header.home': 'Inicio',
     'project.app.Header.logout': 'Saír',
     'project.app.Home.welcome': 'Benvido',
@@ -25,3 +25,4 @@ export default {
     'project.global.validator.passwordsDoNotMatch': 'As contrasinais non coinciden',
     'project.global.validator.required': 'Campo obrigatorio',
 }
+export default gl;

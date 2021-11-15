@@ -1,4 +1,4 @@
-export default {
+const es = {
     'project.app.Header.home': 'Inicio',
     'project.app.Header.logout': 'Salir',
     'project.app.Home.welcome': 'Bienvenido',
@@ -25,3 +25,4 @@ export default {
     'project.global.validator.passwordsDoNotMatch': 'Las contraseñas no coinciden',
     'project.global.validator.required': 'Campo obligatorio',
 }
+export default es;
