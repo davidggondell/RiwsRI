@@ -13,6 +13,7 @@ class DiaSpider(CrawlSpider):
         'https://www.dia.es/compra-online/bebidas/cf',
         'https://www.dia.es/compra-online/bodega/cf',
         'https://www.dia.es/compra-online/congelados/cf'
+        # 'https://www.dia.es/compra-online/despensa/pastas-harinas-y-masas/pastas/p/167481'
     ]
 
     rules = (
@@ -36,6 +37,8 @@ class DiaSpider(CrawlSpider):
         littlePrice = separatedPrice[1]
         table = response.css(
             '#nutritionalinformation > div.tabs-nutritionalinfo-table-nutrients > table')
+        glutenless = response.css(
+            '#primary_image > ul > li::attr(title)').get() == 'Artículo sin Gluten'
 
         priceString = bigPrice + '.' + littlePrice
         totalPrice = float(priceString)
@@ -91,6 +94,7 @@ class DiaSpider(CrawlSpider):
                 'name': name,
                 'subcategories': subCategories,
                 'price': totalPrice,
+                'glutenLess': glutenless,
                 'kJ': nutriValue['kJ'],
                 'kcal': nutriValue['kcal'],
                 'fats': nutriValue['fats'],
