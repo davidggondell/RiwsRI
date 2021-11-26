@@ -4,7 +4,7 @@ from scrapy.linkextractors import LinkExtractor
 
 
 class DiaSpider(CrawlSpider):
-    name = "dia"
+    name = 'dia'
     allowed_domains = ['dia.es']
     start_urls = [
         'https://www.dia.es/compra-online/despensa/cf',
@@ -29,8 +29,12 @@ class DiaSpider(CrawlSpider):
             '#content > div.product-name.container-center > h1::text').get()
         subCategories = response.css(
             '#breadcrumb > ul > li > h3 > a > span::text').getall()
-        comaPrice = response.css(
-            '#productDetailUpdateable > div.product-detail-page__details.productDescription > div.price-container > p > span::text').get().split('\xa0')[0]
+
+        scrapedPrice = response.css(
+            '#productDetailUpdateable > div.product-detail-page__details.productDescription > div.price-container > p > span::text').get()
+        if (scrapedPrice == None):
+            raise Exception("None Price")
+        comaPrice = scrapedPrice.split('\xa0')[0]
         separatedPrice = response.css(
             '#productDetailUpdateable > div.product-detail-page__details.productDescription > div.price-container > p > span::text').get().split('\xa0')[0].split(',')
         bigPrice = separatedPrice[0]
@@ -53,7 +57,7 @@ class DiaSpider(CrawlSpider):
             sugar = ''
             protein = ''
             salt = ''
-            tablelen = len(table.css('tr').getall())
+            tablelen = len(table.css('tr').getall()) + 1
 
             for i in range(4, tablelen):
                 row = table.css('tr:nth-child(' + str(i) +
