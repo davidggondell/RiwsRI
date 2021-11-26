@@ -143,8 +143,8 @@ const Product = ({ product }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <MyRow label="Energía" value={product.kJ.toString() + " KJ"} />
-                        <MyRow label="Energía" value={product.kcal.toString() + " kcal"} />
+                        <MyRow label="Valor energético" value={product.kJ.toString() + " KJ"} />
+                        <MyRow label="Valor energético (Kcal)" value={product.kcal.toString() + " kcal"} />
                         <MyRow label="Grasas" value={product.fats.toString() + " g"} />
                         <MyRow label="Grasas saturadas" value={product.satFats.toString() + " g"} />
                         <MyRow label="Hidratos de carbono" value={product.carbs.toString() + " g"} />
