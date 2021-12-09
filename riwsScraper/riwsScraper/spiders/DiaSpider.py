@@ -59,7 +59,7 @@ class DiaSpider(CrawlSpider):
             salt = ''
             tablelen = len(table.css('tr').getall()) + 1
 
-            for i in range(4, tablelen):
+            for i in range(1, tablelen):
                 row = table.css('tr:nth-child(' + str(i) +
                                 ') > td > div::text').getall()
                 if row[0] == 'valor energético':
@@ -92,6 +92,9 @@ class DiaSpider(CrawlSpider):
             }
 
         nutriValue = obtenerValorNutricional(table)
+        gymRatio = -1
+        if (nutriValue['kcal'] > 0 and nutriValue['protein'] > 0):
+            gymRatio = nutriValue['kcal']/nutriValue['protein']
         return {
             'url': response.url,
             'product': {
@@ -106,6 +109,7 @@ class DiaSpider(CrawlSpider):
                 'carbs': nutriValue['carbs'],
                 'sugar': nutriValue['sugar'],
                 'protein': nutriValue['protein'],
-                'salt': nutriValue['salt']
+                'salt': nutriValue['salt'],
+                'gymRatio': gymRatio
             }
         }

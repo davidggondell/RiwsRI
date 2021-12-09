@@ -1,75 +1,38 @@
 import {
     Divider,
-    Grid
+    Grid,
+    Pagination
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import ProductFilter from './ProductFilter';
+import * as actions from "../actions";
+import * as selectors from "../selectors";
 import Product from './Product';
 
 const Home = () => {
+    const dispatch = useDispatch();
+    const productSearch = useSelector(selectors.getProducts);
+    const [page, setPage] = React.useState(1);
+    const [query, setQuery] = React.useState({});
+    console.log(productSearch);
 
-    const products = [
-        {
-            url: "https://jaja.com",
-            name: 'Producto 1',
-            categorias: ['despensa', 'aceites', 'oliva'],
-            price: 3.99,
-            glutenLess: true,
-            kJ: 2000.0,
-            kcal: 300.3,
-            fats: 100.4,
-            satFats: 30.2,
-            carbs: 124.1,
-            sugar: 10.1,
-            protein: 5.9,
-            salt: 5.0,
-        },
-        {
-            url: "https://jaja2.com",
-            name: 'Producto 222222222222222222222222222222222',
-            categorias: ['despensa', 'aceites', 'oliva'],
-            price: 3.99,
-            glutenLess: true,
-            kJ: 2000.0,
-            kcal: 300.3,
-            fats: 100.4,
-            satFats: 30.2,
-            carbs: 124.1,
-            sugar: 10.1,
-            protein: 5.9,
-            salt: 5.0,
-        },
-        {
-            url: "https://jaja3.com",
-            name: 'Aceite',
-            categorias: ['despensa', 'aceites', 'oliva', 'bebidas', 'grasas', 'aceitunas'],
-            price: 3.99,
-            glutenLess: true,
-            kJ: 2000.0,
-            kcal: 300.3,
-            fats: 100.4,
-            satFats: 30.2,
-            carbs: 124.1,
-            sugar: 10.1,
-            protein: 5.9,
-            salt: 5.0,
-        },
-        {
-            url: "https://jaja4.com",
-            name: 'Coca-cola un produto muy muy muy muy muy muy largo',
-            categorias: ['despensa', 'aceites', 'oliva'],
-            price: 3.99,
-            glutenLess: true,
-            kJ: 2000.0,
-            kcal: 300.3,
-            fats: 100.4,
-            satFats: 30.2,
-            carbs: 124.1,
-            sugar: 10.1,
-            protein: 5.9,
-            salt: 5.0,
-        }
-    ]
+    useEffect(() => {
+        dispatch(actions.findProducts(0, {}));
+    }, [dispatch])
+
+    const handlePageChange = (event, value) => {
+        dispatch(actions.findProducts(value - 1, query));
+        setPage(value);
+        window.scrollTo(0, 0);
+    };
+
+    const searchButtonClick = (newQuery) => {
+        setQuery(newQuery);
+        dispatch(actions.findProducts(0, newQuery));
+        setPage(1);
+        window.scrollTo(0, 0);
+    }
 
     return (
         <Grid
@@ -78,24 +41,41 @@ const Home = () => {
             justifyContent="center"
         >
             <Grid item xs={3}>
-                <ProductFilter />
+                <ProductFilter searchButtonClick={searchButtonClick} />
             </Grid>
             <Grid item >
                 <Divider orientation="vertical" />
             </Grid>
-            <Grid xs={8} item>
-                <Grid
-                    spacing={2}
-                    justifyContent="center"
-                    container
-                >
-                    {products.map((product) => (
-                        <Grid key={product.url} item>
-                            <Product product={product} />
+            {productSearch !== null &&
+                <Grid xs={8} item>
+                    <Grid
+                        spacing={2}
+                        justifyContent="center"
+                        container
+                    >
+                        {productSearch.products.map((product) => (
+                            <Grid key={product._id} item>
+                                <Product url={product._id} product={product._source} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Grid
+                        justifyContent="center"
+                        container
+                    >
+                        <Grid item >
+                            <Pagination
+                                sx={{ marginTop: 2 }}
+                                count={productSearch.totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="secondary"
+                                size="large"
+                            />
                         </Grid>
-                    ))}
+                    </Grid>
                 </Grid>
-            </Grid>
+            }
         </Grid>
     );
 }
