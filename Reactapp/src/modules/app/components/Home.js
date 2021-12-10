@@ -1,21 +1,20 @@
 import {
-    Divider,
+    Alert, Divider,
     Grid,
     Pagination
 } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import ProductFilter from './ProductFilter';
 import * as actions from "../actions";
 import * as selectors from "../selectors";
 import Product from './Product';
+import ProductFilter from './ProductFilter';
 
 const Home = () => {
     const dispatch = useDispatch();
     const productSearch = useSelector(selectors.getProducts);
     const [page, setPage] = React.useState(1);
     const [query, setQuery] = React.useState({});
-    console.log(productSearch);
 
     useEffect(() => {
         dispatch(actions.findProducts(0, {}));
@@ -40,14 +39,21 @@ const Home = () => {
             spacing={1}
             justifyContent="center"
         >
-            <Grid item xs={3}>
+            <Grid item xs={12} md={5} lg={3}>
                 <ProductFilter searchButtonClick={searchButtonClick} />
             </Grid>
             <Grid item >
                 <Divider orientation="vertical" />
             </Grid>
-            {productSearch !== null &&
-                <Grid xs={8} item>
+            {productSearch === null || productSearch === undefined || productSearch.products.length === 0 ?
+                <Grid xs={12} md={6} lg={8} item>
+                    <Alert severity="info" variant="filled">
+                        No hay productos que cumplan con los criterios de búsqueda seleccionados
+                    </Alert>
+                </Grid >
+                :
+
+                <Grid xs={12} md={6} lg={8} item>
                     <Grid
                         spacing={2}
                         justifyContent="center"
