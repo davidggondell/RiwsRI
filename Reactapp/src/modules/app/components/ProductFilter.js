@@ -328,7 +328,6 @@ const ProductFilter = ({ searchButtonClick }) => {
                                 range: {
                                     protein: {
                                         gte: 1,
-                                        lte: 5
                                     }
                                 }
                             },
