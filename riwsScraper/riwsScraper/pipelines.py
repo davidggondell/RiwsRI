@@ -22,14 +22,14 @@ class RiwsscraperPipeline:
                     "name": {
                         "type": "text"
                     },
-                    "category": {
-                        "type": "keyword"
-                    },
                     "subcategories": {
-                        "type": "keyword"
+                        "type": "text"
                     },
                     "price": {
                         "type": "float"
+                    },
+                    "glutenLess": {
+                        "type": "boolean"
                     },
                     "kj": {
                         "type": "float"
@@ -40,39 +40,24 @@ class RiwsscraperPipeline:
                     "fats": {
                         "type": "float"
                     },
-                    "fatPercent": {
-                        "type": "float"
-                    },
                     "satFat": {
-                        "type": "float"
-                    },
-                    "satFatPercent": {
                         "type": "float"
                     },
                     "carbs": {
                         "type": "float"
                     },
-                    "carbsPercent": {
-                        "type": "float"
-                    },
                     "sugar": {
-                        "type": "float"
-                    },
-                    "sugarPercent": {
                         "type": "float"
                     },
                     "protein": {
                         "type": "float"
                     },
-                    "proteinPercent": {
-                        "type": "float"
-                    },
                     "salt": {
                         "type": "float"
                     },
-                    "saltPercent": {
+                    "gymRatio": {
                         "type": "float"
-                    },
+                    }
                 }
             }
         )
