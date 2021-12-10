@@ -6,7 +6,7 @@ const Header = () => {
         <AppBar position="static">
             <Toolbar >
                 <Typography sx={{ marginLeft: 5, fontWeight: 600 }} variant="h4" color="inherit" component="div">
-                    Riws Dia scraper
+                    Scraping Fitness
                 </Typography>
             </Toolbar>
         </AppBar>
