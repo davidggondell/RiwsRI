@@ -378,6 +378,14 @@ const ProductFilter = ({ searchButtonClick }) => {
                     filter: [
                         {
                             range: {
+                                price: {
+                                    gte: priceRange[0],
+                                    lte: priceRange[1]
+                                }
+                            }
+                        },
+                        {
+                            range: {
                                 glutenLess: {
                                     gte: noGlutenCheck ? true : false,
                                     lte: true
@@ -418,19 +426,6 @@ const ProductFilter = ({ searchButtonClick }) => {
 
     const changeDietMode = (newValue) => {
         setDietType(newValue);
-        setNameSearch("");
-        setPriceRange([0, 9999]);
-        setNoSugarCheck(false);
-        setNoGlutenCheck(false);
-        setNoSaltCheck(false);
-        setKJRange([0, 99999]);
-        setKcalRange([0, 9999]);
-        setFatsRange([0, 999]);
-        setSatFatsRange([0, 999]);
-        setCarbsRange([0, 999]);
-        setSugarRange([0, 999]);
-        setProteinRange([0, 999]);
-        setAdmitNoNutriValueCheck(true);
 
         searchButtonClicked(newValue);
     }
