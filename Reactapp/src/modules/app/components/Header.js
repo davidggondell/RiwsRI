@@ -4,9 +4,9 @@ const Header = () => {
 
     return (
         <AppBar position="static">
-            <Toolbar variant="dense">
-                <Typography variant="h6" color="inherit" component="div">
-                    Riws Alcampo scraper
+            <Toolbar >
+                <Typography sx={{ marginLeft: 5, fontWeight: 600 }} variant="h4" color="inherit" component="div">
+                    Scraping Fitness
                 </Typography>
             </Toolbar>
         </AppBar>

@@ -1,21 +1,37 @@
 import {
-    Box, Button, ButtonGroup,
-    Checkbox, Divider, FormControlLabel,
-    FormGroup, Grid, Slider,
-    TextField
+    Alert, Divider,
+    Grid,
+    Pagination
 } from '@mui/material';
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../actions";
+import * as selectors from "../selectors";
+import Product from './Product';
+import ProductFilter from './ProductFilter';
 
 const Home = () => {
-    const [nameSearch, setNameSearch] = React.useState("");
-    const [kJ, setKJ] = React.useState([20, 37]);
-    const [kcal, setKcal] = React.useState([20, 37]);
-    const [fats, setFats] = React.useState([20, 37]);
-    const [satFats, setSatfats] = React.useState([20, 37]);
-    const [carbs, setCarbs] = React.useState([20, 37]);
-    const [sugar, setSugar] = React.useState([20, 37]);
-    const [protein, setProtein] = React.useState([20, 37]);
+    const dispatch = useDispatch();
+    const productSearch = useSelector(selectors.getProducts);
+    const [page, setPage] = React.useState(1);
+    const [query, setQuery] = React.useState({});
+
+    useEffect(() => {
+        dispatch(actions.findProducts(0, {}));
+    }, [dispatch])
+
+    const handlePageChange = (event, value) => {
+        dispatch(actions.findProducts(value - 1, query));
+        setPage(value);
+        window.scrollTo(0, 0);
+    };
+
+    const searchButtonClick = (newQuery) => {
+        setQuery(newQuery);
+        dispatch(actions.findProducts(0, newQuery));
+        setPage(1);
+        window.scrollTo(0, 0);
+    }
 
     return (
         <Grid
@@ -23,72 +39,49 @@ const Home = () => {
             spacing={1}
             justifyContent="center"
         >
-            <Grid item>
-                <Box>
-                    <ButtonGroup size="large" variant="contained" fullWidth>
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>
-                    <TextField
-                        label="¿Qué estas buscando?"
-                        value={nameSearch}
-                        onChange={e => setNameSearch(e.target.value)}
-                        fullWidth
-                    />
-                    <Slider
-                        getAriaLabel={() => 'KJ'}
-                        value={kJ}
-                        onChange={(event, newValue) => setKJ(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <Slider
-                        getAriaLabel={() => 'Kcal'}
-                        value={kcal}
-                        onChange={(event, newValue) => setKcal(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <Slider
-                        getAriaLabel={() => 'Fats'}
-                        value={fats}
-                        onChange={(event, newValue) => setFats(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <Slider
-                        getAriaLabel={() => 'Sat Fats'}
-                        value={satFats}
-                        onChange={(event, newValue) => setSatfats(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <Slider
-                        getAriaLabel={() => 'Carbohidrates'}
-                        value={carbs}
-                        onChange={(event, newValue) => setCarbs(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox />} label="Sin Azúcar" />
-                    </FormGroup>
-                    <Slider
-                        getAriaLabel={() => 'Sugar'}
-                        value={sugar}
-                        onChange={(event, newValue) => setSugar(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                    <Slider
-                        getAriaLabel={() => 'Protein'}
-                        value={protein}
-                        onChange={(event, newValue) => setProtein(newValue)}
-                        valueLabelDisplay="auto"
-                    />
-                </Box>
+            <Grid item xs={12} md={5} lg={3}>
+                <ProductFilter searchButtonClick={searchButtonClick} />
             </Grid>
             <Grid item >
                 <Divider orientation="vertical" />
             </Grid>
-            <Grid item>
-                <FormattedMessage id="project.app.Home.welcome" />
-            </Grid>
+            {productSearch === null || productSearch === undefined || productSearch.products.length === 0 ?
+                <Grid xs={12} md={6} lg={8} item>
+                    <Alert severity="info" variant="filled">
+                        No hay productos que cumplan con los criterios de búsqueda seleccionados
+                    </Alert>
+                </Grid >
+                :
+
+                <Grid xs={12} md={6} lg={8} item>
+                    <Grid
+                        spacing={2}
+                        justifyContent="center"
+                        container
+                    >
+                        {productSearch.products.map((product) => (
+                            <Grid key={product._id} item>
+                                <Product url={product._id} product={product._source} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Grid
+                        justifyContent="center"
+                        container
+                    >
+                        <Grid item >
+                            <Pagination
+                                sx={{ marginTop: 2 }}
+                                count={productSearch.totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="secondary"
+                                size="large"
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            }
         </Grid>
     );
 }

@@ -23,7 +23,7 @@ class RiwsscraperPipeline:
                         "type": "text"
                     },
                     "subcategories": {
-                        "type": "keyword"
+                        "type": "text"
                     },
                     "price": {
                         "type": "float"
@@ -53,6 +53,9 @@ class RiwsscraperPipeline:
                         "type": "float"
                     },
                     "salt": {
+                        "type": "float"
+                    },
+                    "gymRatio": {
                         "type": "float"
                     }
                 }
