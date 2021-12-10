@@ -41,6 +41,8 @@ const ProductFilter = ({ searchButtonClick }) => {
     const [proteinRange, setProteinRange] = React.useState([0, 999]);
     const [admitNoNutriValueCheck, setAdmitNoNutriValueCheck] = React.useState(true);
     const [dietType, setDietType] = React.useState(0);
+    const normal = 0;
+    const diet = 1;
 
     const noSaltValue = 0.12;
     const noSugarValue = 0.5;
@@ -78,7 +80,7 @@ const ProductFilter = ({ searchButtonClick }) => {
         return `${value} g`
     }
 
-    const searchButtonClicked = () => {
+    const searchButtonClicked = (dietMode) => {
         const newQuery =
         {
             query: {
@@ -204,7 +206,233 @@ const ProductFilter = ({ searchButtonClick }) => {
                 }
             }
         }
-        searchButtonClick(newQuery)
+        const dietQuery = {
+            query: {
+                function_score: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    match: {
+                                        name: {
+                                            query: nameSearch,
+                                            fuzziness: "AUTO",
+                                            zero_terms_query: "all"
+                                        }
+                                    }
+                                },
+                                {
+                                    range: {
+                                        sugar: {
+                                            gte: 0,
+                                            lte: noSugarCheck ? noSugarValue : 20
+                                        }
+                                    }
+                                },
+                                {
+                                    range: {
+                                        kcal: {
+                                            gte: 0,
+                                            lte: 350
+                                        }
+                                    }
+                                },
+                                {
+                                    range: {
+                                        price: {
+                                            gte: priceRange[0],
+                                            lte: priceRange[1]
+                                        }
+                                    }
+                                }
+                            ],
+                            filter: [
+                                {
+                                    range: {
+                                        glutenLess: {
+                                            gte: noGlutenCheck ? true : false,
+                                            lte: true
+                                        }
+                                    }
+                                },
+
+                                {
+                                    range: {
+                                        salt: {
+                                            gte: noSaltCheck ? 0 : -1,
+                                            lte: noSaltCheck ? noSaltValue : maxSaltValue
+                                        }
+                                    }
+                                }
+                            ],
+                        }
+                    },
+                    functions: [
+                        {
+                            filter: {
+                                range: {
+                                    kcal: {
+                                        gte: 0,
+                                        lte: 100
+                                    }
+                                }
+                            },
+                            weight: 30
+                        },
+                        {
+                            filter: {
+                                range: {
+                                    kcal: {
+                                        gte: 100,
+                                        lte: 200
+                                    }
+                                }
+                            },
+                            weight: 15
+                        },
+                        {
+                            filter: {
+                                range: {
+                                    kcal: {
+                                        gte: 200,
+                                        lte: 300
+                                    }
+                                }
+                            },
+                            weight: 10
+                        },
+                        {
+                            filter: {
+                                range: {
+                                    fats: {
+                                        gte: 0,
+                                        lte: 10
+                                    }
+                                }
+                            },
+                            weight: 10
+                        },
+                        {
+                            filter: {
+                                range: {
+                                    carbs: {
+                                        gte: 0,
+                                        lte: 15
+                                    }
+                                }
+                            },
+                            weight: 10
+                        },
+                        {
+                            filter: {
+                                range: {
+                                    protein: {
+                                        gte: 1,
+                                        lte: 5
+                                    }
+                                }
+                            },
+                            weight: 30
+                        }
+                    ]
+                }
+            }
+        }
+        const gymQuery = {
+            query: {
+                bool: {
+                    should: [
+                        {
+                            match: {
+                                name: {
+                                    query: nameSearch,
+                                    fuzziness: "AUTO",
+                                    zero_terms_query: "all"
+                                }
+                            }
+                        },
+                        {
+                            match_bool_prefix: {
+                                name: {
+                                    query: nameSearch
+                                }
+                            }
+                        },
+                        {
+                            match: {
+                                subcategories: {
+                                    query: nameSearch,
+                                    fuzziness: "AUTO",
+                                    zero_terms_query: "all"
+                                }
+                            }
+                        },
+                        {
+                            match_bool_prefix: {
+                                subcategories: {
+                                    query: nameSearch
+                                }
+                            }
+                        },
+                    ],
+                    filter: [
+                        {
+                            range: {
+                                glutenLess: {
+                                    gte: noGlutenCheck ? true : false,
+                                    lte: true
+                                }
+                            }
+                        },
+                        {
+                            range: {
+                                sugar: {
+                                    gte: -1,
+                                    lte: noSugarCheck ? noSugarValue : 999
+                                }
+                            }
+                        },
+                        {
+                            range: {
+                                salt: {
+                                    gte: noSaltCheck ? 0 : -1,
+                                    lte: noSaltCheck ? noSaltValue : maxSaltValue
+                                }
+                            }
+                        },
+                        {
+                            range: {
+                                gymRatio: {
+                                    gte: 0,
+                                    lte: 15
+                                }
+                            }
+                        }
+                    ],
+                }
+            }
+        }
+
+        searchButtonClick((dietMode === normal) ? newQuery : (dietMode === diet ? dietQuery : gymQuery));
+    }
+
+    const changeDietMode = (newValue) => {
+        setDietType(newValue);
+        setNameSearch("");
+        setPriceRange([0, 9999]);
+        setNoSugarCheck(false);
+        setNoGlutenCheck(false);
+        setNoSaltCheck(false);
+        setKJRange([0, 99999]);
+        setKcalRange([0, 9999]);
+        setFatsRange([0, 999]);
+        setSatFatsRange([0, 999]);
+        setCarbsRange([0, 999]);
+        setSugarRange([0, 999]);
+        setProteinRange([0, 999]);
+        setAdmitNoNutriValueCheck(true);
+
+        searchButtonClicked(newValue);
     }
 
     return (
@@ -213,7 +441,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                 <BottomNavigation
                     showLabels
                     value={dietType}
-                    onChange={(event, newValue) => setDietType(newValue)}
+                    onChange={(event, newValue) => changeDietMode(newValue)}
                     sx={{ padding: 1, backgroundColor: 'primary.main', borderRadius: 1 }}
                 >
                     <BottomNavigationAction
@@ -324,7 +552,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                 </Grid>
             </Grid>
             <Box container>
-                {maxKcal !== null &&
+                {maxKcal !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Valor energético (KJ)
@@ -340,7 +568,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {maxKcal !== null &&
+                {maxKcal !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Valor energético (Kcal)
@@ -356,7 +584,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {maxFats !== null &&
+                {maxFats !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Grasas
@@ -373,7 +601,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {maxSatFats !== null &&
+                {maxSatFats !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Grasas saturadas
@@ -390,7 +618,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {maxCarbs !== null &&
+                {maxCarbs !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Hidratos de carbono
@@ -407,7 +635,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {(maxSugar !== null && !noSugarCheck) &&
+                {(maxSugar !== null && !noSugarCheck) && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Azúcares
@@ -424,7 +652,7 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                {maxProtein !== null &&
+                {maxProtein !== null && dietType === normal &&
                     <React.Fragment>
                         <Typography id="input-slider" variant="body" gutterBottom sx={{ fontWeight: 600 }}>
                             Proteínas
@@ -441,21 +669,23 @@ const ProductFilter = ({ searchButtonClick }) => {
                         />
                     </React.Fragment>
                 }
-                <FormGroup>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={admitNoNutriValueCheck}
-                                onChange={event => setAdmitNoNutriValueCheck(event.target.checked)}
-                                color="secondary"
-                            />
-                        }
-                        label="Admitir productos sin info. nutricional?"
-                    />
-                </FormGroup>
+                {dietType === normal &&
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={admitNoNutriValueCheck}
+                                    onChange={event => setAdmitNoNutriValueCheck(event.target.checked)}
+                                    color="secondary"
+                                />
+                            }
+                            label="Admitir productos sin info. nutricional?"
+                        />
+                    </FormGroup>
+                }
             </Box>
             <Grid container justifyContent="flex-end">
-                <Button variant="contained" onClick={() => searchButtonClicked()} >
+                <Button variant="contained" onClick={() => searchButtonClicked(dietType)} >
                     Buscar
                 </Button>
             </Grid>

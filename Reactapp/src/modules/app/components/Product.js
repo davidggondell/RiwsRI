@@ -23,8 +23,7 @@ const Product = ({ url, product }) => {
 
     const MyRow = ({ label, value }) => (
         <TableRow>
-            <TableCell />
-            <TableCell sx={{ color: 'primary.contrastText' }}>
+            <TableCell sx={{ color: 'primary.contrastText' }} colSpan={2}>
                 {label}
             </TableCell>
             <TableCell
@@ -163,7 +162,7 @@ const Product = ({ url, product }) => {
                                     </IconButton>
                                 </TableCell>
                                 <TableCell sx={{ color: 'primary.contrastText', fontWeight: 600 }}>
-                                    Info. Nutricional (100g)
+                                    Info. Nutricional (100g/100ml)
                                 </TableCell>
                                 <TableCell
                                     sx={{ color: 'primary.contrastText', fontWeight: 600 }}
