@@ -11,7 +11,7 @@ from elasticsearch import Elasticsearch
 
 class RiwsscraperPipeline:
     def __init__(self):
-        self.es = Elasticsearch(['localhost:9200'])
+        self.es = Elasticsearch(['http://localhost:9200'])
         # ignore 400 cause by IndexAlreadyExistsException when creating an index
         self.es.indices.create(index='products', ignore=400)
         self.count = 0
@@ -64,5 +64,5 @@ class RiwsscraperPipeline:
 
     def process_item(self, item, spider):
         self.count += 1
-        self.es.create('products', item['url'], item['product'])
+        self.es.create(index='products', id=item['url'], document=item['product'])
         return item
