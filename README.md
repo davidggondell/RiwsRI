@@ -1,7 +1,7 @@
 # RiwsRI
 
 ## Crawler
-Para la ejecución del crawler se necesita instalar scrapy y la API de python de elasticsearch. Una vez instalados, desde el directorio riwsScraper/riwsScraper se ejecuta el comando "scrapy crawl dia" con un servicio de ElasticSearch corriendo en el puerto 9200.
+Para la ejecución del crawler se necesita instalar scrapy y la API de python de elasticsearch. Una vez instalados, desde el directorio riwsScraper/riwsScraper se ejecuta el comando "scrapy crawl dia" con un servicio de ElasticSearch corriendo en el puerto 9200. En concreto la versión de elasticsearch 7.17.6 requiere menos configuración que versiones más recientes por lo que es la que se recomienda utilizar.
 
 ## React
 La ejecución de de la aplicación web se hace desde el directorio Reactapp con los comandos "yarn" (la primera vez) y "yarn start" teniendo yarn instalado.
